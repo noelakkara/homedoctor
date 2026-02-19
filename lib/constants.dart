@@ -45,6 +45,43 @@ class AppStrings {
   static const String loginSuccess = 'Login Successful!';
   static const String noAccount = "Don't have an account?";
   static const String signUp = 'Sign Up';
+  static const String signUpTitle = 'Create Account';
+  static const String signUpSubtitle = 'Join HomeDoctor for better health care';
+  static const String nameLabel = 'Full Name';
+  static const String nameHint = 'Enter your full name';
+  static const String nameEmptyError = 'Please enter your name';
+  static const String phoneLabel = 'Phone Number';
+  static const String phoneHint = '10-digit mobile number';
+  static const String phoneEmptyError = 'Please enter your phone number';
+  static const String phoneInvalidError = 'Please enter a valid phone number';
+  static const String loginWithPhone = 'Login with Phone';
+  static const String loginWithEmail = 'Login with Email';
+  static const String alreadyHaveAccount = 'Already have an account?';
+  static const String sendOTP = 'Send OTP';
+  static const String verifyOTP = 'Verify OTP';
+  static const String otpLabel = 'Enter OTP';
+  static const String otpHint = '6-digit code';
+  static const String otpEmptyError = 'Please enter OTP';
+  static const String otpInvalidError = 'OTP must be 6 digits';
+  static const String otpSentSuccess = 'OTP sent successfully!';
+  static const String otpVerifySuccess = 'OTP Verified!';
+  
+  static const String identifierLabel = 'Email or Phone Number';
+  static const String identifierHint = 'Enter email or phone';
+  static const String identifierEmptyError = 'Please enter email or phone';
+  static const String useOTPInstead = 'Login with OTP instead';
+  static const String usePasswordInstead = 'Login with Password instead';
+  static const String signUpWithOTP = 'Sign up with OTP instead';
+  static const String signUpWithPassword = 'Sign up with Password instead';
+  
+  static const String confirmPasswordLabel = 'Confirm Password';
+  static const String passwordMismatchError = 'Passwords do not match';
+  static const String signupSuccessRedirect = 'Signup successful! Please login.';
+  
+  static const String forgotPasswordTitle = 'Forgot Password';
+  static const String resetPassword = 'Reset Password';
+  static const String passwordResetSuccess = 'Password reset successfully! Please login.';
+  static const String enterNewPassword = 'Enter New Password';
   
   // Doctor Search Page
   static const String findDoctorTitle = 'Find a Doctor';
