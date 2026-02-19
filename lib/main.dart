@@ -56,12 +56,12 @@ class _CheckAuthState extends State<CheckAuth> {
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    final userEmail = prefs.getString('userEmail') ?? '';
+    final userIdentifier = prefs.getString('userIdentifier') ?? '';
 
     if (mounted) {
       if (isLoggedIn) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => DashboardPage(email: userEmail)),
+          MaterialPageRoute(builder: (context) => DashboardPage(email: userIdentifier)),
         );
       } else {
         Navigator.of(context).pushReplacement(
