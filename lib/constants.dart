@@ -83,6 +83,18 @@ class AppStrings {
   static const String passwordResetSuccess = 'Password reset successfully! Please login.';
   static const String enterNewPassword = 'Enter New Password';
   
+  static const String doctorLogin = 'Doctor Login';
+  static const String doctorSignUp = 'Doctor Sign Up';
+  static const String verificationPending = 'Verification Pending';
+  static const String uploadDocuments = 'Upload Documents';
+  static const String bankDetails = 'Bank Details';
+  
+  // Doctor Navigation
+  static const String appointments = 'Appointments';
+  static const String slots = 'Slots';
+  static const String wallet = 'Wallet';
+  static const String profile = 'Profile';
+
   // Doctor Search Page
   static const String findDoctorTitle = 'Find a Doctor';
   static const String searchHint = 'Search doctor, department, or hospital';

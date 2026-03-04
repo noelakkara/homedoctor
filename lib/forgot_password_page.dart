@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/constants.dart';
+import 'package:homedoctor/constants.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});

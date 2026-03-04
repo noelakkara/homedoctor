@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/booking_page.dart';
-import 'package:homedocter/data.dart'; // Import shared data
+import 'package:homedoctor/booking_page.dart';
+import 'package:homedoctor/data.dart'; // Import shared data
 
 class DoctorSearchPage extends StatefulWidget {
   final String? departmentName; // Optional department filter

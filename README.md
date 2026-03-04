@@ -1,4 +1,4 @@
-# homedocter
+# homedoctor
 
 A new Flutter project.
 
