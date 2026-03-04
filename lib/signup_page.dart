@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/constants.dart';
-import 'package:homedocter/login_page.dart';
-import 'package:homedocter/dashboard_page.dart';
+import 'package:homedoctor/constants.dart';
+import 'package:homedoctor/login_page.dart';
+import 'package:homedoctor/dashboard_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatefulWidget {

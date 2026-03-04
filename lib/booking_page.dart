@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/constants.dart';
-import 'package:homedocter/payment_page.dart';
+import 'package:homedoctor/constants.dart';
+import 'package:homedoctor/payment_page.dart';
 
 class BookingPage extends StatefulWidget {
   final Map<String, String> doctor;
