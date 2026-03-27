@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/login_page.dart';
-import 'package:homedocter/dashboard_page.dart';
+import 'package:homedoctor/login_page.dart';
+import 'package:homedoctor/dashboard_page.dart';
+import 'package:homedoctor/doctor_dashboard_page.dart';
+import 'package:homedoctor/doctor_verification_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -57,12 +59,27 @@ class _CheckAuthState extends State<CheckAuth> {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final userIdentifier = prefs.getString('userIdentifier') ?? '';
+    final isDoctor = prefs.getBool('isDoctor') ?? false;
+    final doctorVerified = prefs.getBool('doctorVerified') ?? false;
 
     if (mounted) {
       if (isLoggedIn) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => DashboardPage(email: userIdentifier)),
-        );
+        if (isDoctor) {
+           if (doctorVerified) {
+             Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const DoctorDashboardPage()),
+            );
+           } else {
+             Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const DoctorVerificationPage()),
+            );
+           }
+        } else {
+           Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => DashboardPage(email: userIdentifier)),
+          );
+        }
+       
       } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginPage()),

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:homedocter/constants.dart';
-import 'package:homedocter/login_page.dart';
-import 'package:homedocter/my_appointments_page.dart';
-import 'package:homedocter/department_selection_page.dart'; // Import Department Selection Page
+import 'package:homedoctor/constants.dart';
+import 'package:homedoctor/login_page.dart';
+import 'package:homedoctor/my_appointments_page.dart';
+import 'package:homedoctor/department_selection_page.dart'; // Import Department Selection Page
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPage extends StatefulWidget {

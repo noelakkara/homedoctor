@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/dashboard_page.dart';
+import 'package:homedoctor/dashboard_page.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentPage extends StatefulWidget {
   final Map<String, String> doctor;
@@ -30,13 +31,71 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  String _selectedPaymentMethod = 'Card'; // Default
+  String _selectedPaymentMethod = 'Razorpay'; // Default
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _cardNumberController = TextEditingController();
-  final TextEditingController _expiryDateController = TextEditingController();
-  final TextEditingController _cvvController = TextEditingController();
+  
+  late Razorpay _razorpay;
 
   final double _consultationFee = 500.0; // INR
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Payment successful, show success dialog
+    _showSuccessDialog();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Payment failed, show error message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Payment Failed: ${response.message}"),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // External wallet selected
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("External Wallet Selected: ${response.walletName}")),
+    );
+  }
+
+  void _openCheckout() async {
+    var options = {
+      'key': 'rzp_test_SIQb0L3Qb7nxXo', // Replace with your actual key
+      'amount': (_consultationFee * 100).toInt(), // amount in the smallest currency unit (paise for INR)
+      'name': 'HomeDoctor',
+      'description': 'Consultation with Dr. ${widget.doctor['name']}',
+      'prefill': {
+        'contact': widget.phone,
+        'email': 'customer@example.com' // You might want to pass user email here
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,117 +175,34 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               const SizedBox(height: 16),
 
-              // Payment Methods
+              // Payment options UI simplified or redirected to Razorpay
               _buildPaymentOption(
-                'Credit / Debit Card',
-                'Card',
-                Icons.credit_card,
-              ),
-              _buildPaymentOption(
-                'UPI (Google Pay / PhonePe)',
-                'UPI',
-                Icons.mobile_friendly,
+                'Online Payment (Card / UPI / Wallet)',
+                'Razorpay',
+                Icons.payment,
               ),
               _buildPaymentOption('Cash on Visit', 'Cash', Icons.money),
 
-              const SizedBox(height: 24),
-
-              // Card Details Form (Only if Card is selected)
-              if (_selectedPaymentMethod == 'Card') ...[
-                const Text(
-                  'Card Details',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _cardNumberController,
-                  decoration: const InputDecoration(
-                    labelText: 'Card Number',
-                    hintText: 'XXXX XXXX XXXX XXXX',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.credit_card),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 16) {
-                      return 'Enter valid card number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _expiryDateController,
-                        decoration: const InputDecoration(
-                          labelText: 'Expiry Date',
-                          hintText: 'MM/YY',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter expiry';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _cvvController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'CVV',
-                          hintText: '123',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length < 3) {
-                            return 'Enter CVV';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-
-              if (_selectedPaymentMethod == 'UPI')
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Text('Redirecting to UPI app on confirmation...'),
-                  ),
-                ),
-
               if (_selectedPaymentMethod == 'Cash')
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.orange),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Please keep exact change ready for the doctor.',
+                Padding(
+                  padding: const EdgeInsets.only(top: 24.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.orange),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Please keep exact change ready for the doctor.',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -282,53 +258,57 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _processPayment() {
-    if (_selectedPaymentMethod == 'Card') {
-      if (!_formKey.currentState!.validate()) return;
+    if (_selectedPaymentMethod == 'Razorpay') {
+      _openCheckout();
+      return;
     }
 
-    // Simulate payment processing
+    // Cash on visit process (simulated)
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
         Navigator.pop(context); // Pop loader
-
-        // Show success and navigate to dashboard
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            title: const Column(
-              children: [
-                Icon(Icons.check_circle, color: Colors.green, size: 60),
-                SizedBox(height: 16),
-                Text('Booking Confirmed!'),
-              ],
-            ),
-            content: const Text(
-              'Your appointment has been booked successfully. A confirmation email has been sent.',
-              textAlign: TextAlign.center,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const DashboardPage(openAppointments: true),
-                    ),
-                    (route) => false,
-                  );
-                },
-                child: const Text('Go to Dashboard'),
-              ),
-            ],
-          ),
-        );
+        _showSuccessDialog();
       }
     });
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Column(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 60),
+            SizedBox(height: 16),
+            Text('Booking Confirmed!'),
+          ],
+        ),
+        content: const Text(
+          'Your appointment has been booked successfully. A confirmation email has been sent.',
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const DashboardPage(openAppointments: true),
+                ),
+                (route) => false,
+              );
+            },
+            child: const Text('Go to Dashboard'),
+          ),
+        ],
+      ),
+    );
   }
 }

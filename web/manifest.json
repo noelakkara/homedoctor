@@ -1,6 +1,6 @@
 {
-    "name": "homedocter",
-    "short_name": "homedocter",
+    "name": "homedoctor",
+    "short_name": "homedoctor",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hex_color",

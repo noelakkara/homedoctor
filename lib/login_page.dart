@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:homedocter/constants.dart';
-import 'package:homedocter/dashboard_page.dart';
-import 'package:homedocter/signup_page.dart';
-import 'package:homedocter/forgot_password_page.dart';
+import 'package:homedoctor/constants.dart';
+import 'package:homedoctor/dashboard_page.dart';
+import 'package:homedoctor/signup_page.dart';
+import 'package:homedoctor/forgot_password_page.dart';
+import 'package:homedoctor/doctor_login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       await prefs.setBool('isLoggedIn', true);
       await prefs.setString('userIdentifier', identifier);
       await prefs.setString('loginMode', 'password');
+      await prefs.setBool('isDoctor', false);
       _navigateToDashboard(identifier);
     } else {
       if (!_otpSent) {
@@ -55,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _otpSent = true;
         });
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text(AppStrings.otpSentSuccess)),
         );
@@ -64,8 +67,10 @@ class _LoginPageState extends State<LoginPage> {
           await prefs.setBool('isLoggedIn', true);
           await prefs.setString('userIdentifier', identifier);
           await prefs.setString('loginMode', 'otp');
+          await prefs.setBool('isDoctor', false);
           _navigateToDashboard(identifier);
         } else {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Invalid OTP. Use 123456 for testing.')),
           );
@@ -91,6 +96,31 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DoctorLoginPage()),
+                );
+              },
+              icon: const Icon(Icons.medical_services_outlined, size: 18),
+              label: const Text(
+                AppStrings.doctorLogin,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue.shade700,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.zero,
         child: Form(
@@ -279,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SignUpPage()),
+                              MaterialPageRoute(builder: (context) => const SignUpPage()),
                             );
                           },
                           child: const Text(

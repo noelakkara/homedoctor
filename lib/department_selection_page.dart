@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:homedocter/data.dart';
-import 'package:homedocter/doctor_search_page.dart';
+import 'package:homedoctor/data.dart';
+import 'package:homedoctor/doctor_search_page.dart';
 
 class DepartmentSelectionPage extends StatelessWidget {
   const DepartmentSelectionPage({super.key});
